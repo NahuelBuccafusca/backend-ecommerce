@@ -1,18 +1,19 @@
 <h2>GESTION USUARIOS</h2>
 
-  <div>
+  <div >
     <h4>DATOS</h4>
     <div >
     <p>Nombre:{{user.first_name}}</p>
     <p>Apellido:{{user.last_name}}</p>
     <p>Email: {{user.email}}</p>
     <p>Edad:{{user.age}}</p>
-    <p>Rol: <span class="rol">{{user.rol}}</span></p>
+    <p>Rol: <span>{{user.rol}}</span></p>
     </div>
   </div>
 
-  <button data-id="{{user._id}}">CAMBIAR ROL</button>
-  <a href="../../users">Volver</a>
+  <div><button data-id="{{user._id}}">Cambiar rol</button>
+ <button data-id="{{user._id}}">Eliminar</button></div>
+  <a  href="../../users">Volver</a>
 </div>
 
 <script src="/js/changeRol.js"></script>
