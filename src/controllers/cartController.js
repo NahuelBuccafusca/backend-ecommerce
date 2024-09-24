@@ -1,7 +1,6 @@
 const cartManager = require("../dao/classes/cart.dao.js");
 const cartModel = require("../dao/models/cart.model.js");
 const productManager = require("../dao/classes/product.dao.js");
-const productModel = require("../dao/models/product.model.js");
 const userManager = require("../dao/classes/user.dao.js");
 const crypto = require("crypto");
 const ticketManager = require("../dao/classes/ticket.dao.js");

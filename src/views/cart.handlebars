@@ -28,14 +28,12 @@
    
       <div class="productInCart" data-id="{{../cart._id}}">
         <p>{{this.product.title}}</p>
+        <p class="quantity">Cantidad: {{this.quantity}}</p>
       <div class="productsQuantity">
         <button class="sumar addButton" data-id="{{this.product._id}}">+</button>
-         <p class="quantity">Cantidad: {{this.quantity}}</p>
          <p>Total: {{this.totalPrice}}</p>
         <button class="deleteButton" data-id="{{this.product._id}}">-</button>
        </div>
-       
-        {{!-- <button class="deleteButton" data-id="{{this._id}}">Borrar</button> --}}
        </div>
        
     {{/each}}

@@ -27,32 +27,28 @@ exports.getProducts = async (req, res) => {
   page = parseInt(page);
 
   try {
-    // Construir filtro de búsqueda
     let filter = {};
     if (category) {
-      // Buscar por categoría o disponibilidad
+      
       filter = {
         $or: [
           { category: category.toUpperCase() },
-          { available: category.toLowerCase() === "true" }, // Comparar como booleano
+          { available: category.toLowerCase() === "true" }, 
         ],
       };
     }
 
-    // Opciones de sorteo
+  
     let sortOptions = {};
     if (sort) {
       sortOptions.price = sort === "asc" ? 1 : -1;
     }
-
-    // Obtener el total de productos que coinciden con el filtro
+  
     const totalProducts = await productService.totalProducts(filter);
 
-    // Calcular la paginación
     const totalPages = Math.ceil(totalProducts / limit);
     const offset = (page - 1) * limit;
 
-    // Obtener productos paginados
     const products = await productModel
       .find(filter)
       .lean()
@@ -60,7 +56,6 @@ exports.getProducts = async (req, res) => {
       .skip(offset)
       .limit(limit);
 
-    // Construir la respuestas
     const response = {
       status: "success",
       payload: products,
@@ -95,7 +90,6 @@ exports.getProducts = async (req, res) => {
         minute: "numeric",
         hour12: true,
       });
-      //Renderizamos la vista
       if (user.rol === "user" || user.rol === "premium") {
         const cart = await cartService.getCartById(user.cart);
 
@@ -124,7 +118,6 @@ exports.getProducts = async (req, res) => {
       });
     }
 
-    // res.json(response);
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ status: "error", message: "Internal server error" });
@@ -142,7 +135,7 @@ exports.productDetails = async (req, res) => {
       title: "Detalles producto",
       isAdmin: isAdmin,
     });
-    // res.send(product)
+    
   } else {
     const cart = await cartService.getCartById(req.session.user.cart);
     if (cart) {
@@ -172,7 +165,6 @@ exports.productsAdmin = async (req, res) => {
     result.user = req.session.user;
     result.isAdmin = isAdmin;
     res.render("productsManager", result);
-    // res.send({ result: "success", payload: products });
   } catch (error) {
     console.error("No se encuentran productos en la Base de datos", error);
   }
@@ -236,7 +228,7 @@ exports.addProductToBD = async (req, res) => {
       result.error = error.message;
 
       res.render("productsManager", result);
-      // res.status(400).json({ error: "Número de código existente" });
+    
     } else {
       res
         .status(500)

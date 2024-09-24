@@ -15,23 +15,27 @@ header {
   }
   
   header nav ul {
+    width: 100vw;
     list-style: none;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-left: 50%;
     gap: 20px;
+    justify-content: space-between;
+    
   }
   
   header nav ul li:hover {
     border-bottom: 1px solid black;
   }
+  
   #imgCart {
     width: 50px;
     height: 50px;
     object-position: center;
     position: relative;
     transition: all 1000ms;
+    padding: 10px;
   }
   
   #imgCart:hover {
@@ -208,18 +212,15 @@ header {
   }
     
   .quantity {
-    width: 0.8rem;
+    width:50vw;
     height: 0.8rem;
     text-align: center;
-    position: absolute;
-    color: white;
-    background-color: black;
+    color: rgb(2, 0, 0);
     font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
       "Lucida Sans", Arial, sans-serif;
     border-radius: 50%;
     font-size: 0.8rem;
-    left: 20px;
-    top: 20px;
+    text-align: start;
   }
   .sectionProducts {
     width: 100%;
@@ -337,7 +338,7 @@ header {
     border-radius: 5px;
     color: white;
     margin: 5px;
-    cursor: pointer;
+    width: fit-content;
   }
   .deleteButton:hover {
     background-color: white;
@@ -406,20 +407,7 @@ header {
     align-items: center;
     padding: 20px;
   }
-  .quantity {
-    width: 0.8rem;
-    height: 0.8rem;
-    text-align: center;
-    position: absolute;
-    color: white;
-    background-color: black;
-    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-      "Lucida Sans", Arial, sans-serif;
-    border-radius: 50%;
-    font-size: 0.8rem;
-    left: 20px;
-    top: 20px;
-  }
+  
   .productDetails {
     width: 90%;
     border: 1px solid black;
@@ -442,20 +430,7 @@ header {
     flex-direction: column;
     justify-content: space-between;
     gap: 5px;}
-    .addButton {
-        background-color: blue;
-        color: white;
-        padding: 5px;
-        border: 1px solid white;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      
-      .addButton:hover {
-        background-color: white;
-        border: 1px solid blue;
-        color: blue;
-      }
+
       .btns {
         display: flex;
         gap: 20px;
@@ -469,11 +444,6 @@ header {
         cursor: pointer;
       }
       
-      .addButton:hover {
-        background-color: white;
-        border: 1px solid black;
-        color: black;
-      }
       
       .productInCart {
         width: 90%;
@@ -520,46 +490,6 @@ header {
         border: 1px solid black;
       }
       
-      .deleteButton {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: rgb(240, 30, 65);
-        padding: 5px;
-        height: 20px;
-        width: 20px;
-        font-size: 1rem;
-        border: 1px solid red;
-        border-radius: 5px;
-        color: white;
-        margin: 5px;
-        cursor: pointer;
-      }
-      .deleteButton:hover {
-        background-color: white;
-        color: red;
-      }
-      .addButton {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: blue;
-        height: 20px;
-        width: 20px;
-        font-size: 1rem;
-        color: white;
-        padding: 5px;
-        border: 1px solid white;
-        border-radius: 5px;
-        margin: 5px;
-        cursor: pointer;
-      }
-      
-      .addButton:hover {
-        background-color: white;
-        border: 1px solid blue;
-        color: blue;
-      }
       
       .carritoVacio {
         display: flex;

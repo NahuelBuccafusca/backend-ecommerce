@@ -1,5 +1,4 @@
 const messageManager = require("../dao/classes/message.dao.js");
-const userManager = require("../dao/classes/user.dao.js");
 
 const messageService = new messageManager();
 

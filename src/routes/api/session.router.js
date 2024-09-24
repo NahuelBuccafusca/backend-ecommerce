@@ -1,12 +1,6 @@
 const express = require("express");
 const passport = require("passport");
 const sessionController = require("../../controllers/sessionController.js");
-const {
-  generateToken,
-  authToken,
-  passportCall,
-  authorization,
-} = require("../../utils.js");
 
 const router = express.Router();
 

@@ -6,7 +6,6 @@ const router = express.Router();
 
 const {
   isAuthenticated,
-  isNotAuthenticated,
   isAdmin,
 } = require("../middleware/auth.js");
 
