@@ -1,33 +1,26 @@
+const passport = require("passport");
 const userDTO = require("../dao/DTOs/user.dto");
-const { createHash } = require("../utils.js");
-const nodemailer = require("nodemailer");
+const { createHash, isValidPassword } = require("../utils.js");
 const { devLogger, prodLogger } = require("../middleware/logger.js");
-const dotenv = require("dotenv");
+const { transport } = require("../middleware/mailer.js");
 const { v4: uuidv4 } = require("uuid");
-const UserManager = require("../dao/classes/user.dao.js");
 const TokenManager = require("../dao/classes/token.dao.js");
-const userService = new UserManager();
+const UserManager = require("../dao/classes/user.dao.js");
+
 const tokenService = new TokenManager();
+const userService = new UserManager();
 
-dotenv.config();
-
-const transport = nodemailer.createTransport({
-  service: "gmail",
-  port: 587,
-  auth: {
-    user: process.env.usermail,
-    pass: process.env.pass,
-  },
-});
 exports.register = async (req, res) => {
   res.redirect("/userregistrade");
 };
+
 exports.failregister = async (req, res) => {
   res.render("register", {
     title: "Registro",
     error: "No se puede registar al usuario",
   });
 };
+
 exports.login = async (req, res) => {
   if (!req.user)
     return res
@@ -43,8 +36,8 @@ exports.login = async (req, res) => {
       age: req.user.age,
       cart: req.user.cart,
       rol: req.user.rol,
+      last_connection: req.user.last_connection,
     };
-
     if (req.session.user.rol === "admin") {
       res.redirect("/productsManager");
     } else {
@@ -55,44 +48,12 @@ exports.login = async (req, res) => {
   }
 };
 
-
-exports.current =  async (req, res) => {
-  try {
-    if (req.session.user) {
-      let user = new userDTO(req.session.user);
-      res.render("profile", { user: user });
-    } else {
-      res.render("profile", {
-        error: "No ha iniciado sesión",
-      });
-    }
-  } catch (error) {
-    prodLogger.warning("No ha iniciado sesión");
-  }
-};
-
-exports.logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) return res.status(500).send("Error al cerrar sesión");
-    res.redirect("/login");
-  });
-};
-
-exports.githubCallback = async (req, res) => {
-  req.session.user = req.user;
-  if (req.session.user.rol === "admin") {
-    res.redirect("/productsManager");
-  } else {
-    res.redirect("/products");
-  }
-};
-
-
 exports.changePasswordGet = async (req, res) => {
   res.render("changePassword");
 };
 
 exports.changePasswordPost = async (req, res) => {
+  const host = req.get("host");
   let correo = req.body.correo;
   let user = await userService.getUserByEmail(correo);
   let token = uuidv4();
@@ -113,14 +74,27 @@ exports.changePasswordPost = async (req, res) => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Document</title><style>
+      body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        background-color: black;
+        width: 100%;
+        color: white;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <h1>RESTABLECIMIENTO DE CONTRASEÑA</h1>
     <p>Hola ${user.first_name}!</p>
     <div>
       <p>Ingresa al siguiente link:</p>
-      <p>http://localhost:8080/reset_password?token=${token}</p>
+      <p>http://${host}/reset_password?token=${token}</p>
     </div>
   </body>
   </html>
@@ -128,11 +102,11 @@ exports.changePasswordPost = async (req, res) => {
   });
   let login = "/login";
   res.render("changePassword", {
-    aviso: `Correo enviado a ${correo}`,
+    gracias: "Gracias",
+    aviso: `Revisa tu correo ${correo}`,
     link: login,
   });
 };
-
 
 exports.reset_password = async (req, res) => {
   const token = req.query.token;
@@ -141,7 +115,10 @@ exports.reset_password = async (req, res) => {
   if (currentTime > existToken.expirationTime) {
     res.redirect("/changePassword");
   } else {
-    res.render("resetPassword", { token: token, correo: existToken.email });
+    res.render("resetPassword", {
+      token: token,
+      correo: existToken.email,
+    });
   }
 };
 
@@ -153,7 +130,7 @@ exports.changePasswordPut = async (req, res) => {
     let isSamePassword = isValidPassword(user, password);
     if (isSamePassword) {
       return res
-        .status(400)
+        .status(200)
         .json({ message: "No se puede utilizar la misma contraseña" });
     } else {
       let newPassword = createHash(password);
@@ -167,5 +144,47 @@ exports.changePasswordPut = async (req, res) => {
   } catch (error) {
     console.error("Error al cambiar la contraseña:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+exports.current = async (req, res) => {
+  try {
+    let id = req.session.user.id;
+    if (req.session.user) {
+      let user = new userDTO(req.session.user);
+      res.render("profile", { user: user, id: id });
+    } else {
+      res.render("profile", {
+        error: "No ha iniciado sesión",
+      });
+    }
+  } catch (error) {
+    prodLogger.warning("No ha iniciado sesión");
+  }
+};
+
+exports.logout = async (req, res) => {
+  const { email } = req.session.user;
+  const date = new Date();
+  const last = { last_connection: date };
+  await userService.updateUser(email, last);
+  req.session.destroy((err) => {
+    if (err) {
+      prodLogger.error("Error al cerrar cesión");
+      return res.status(500).send("Error al cerrar sesión");
+    }
+
+    res.redirect("/login");
+  });
+};
+
+
+
+exports.githubCallback = async (req, res) => {
+  req.session.user = req.user;
+  if (req.session.user.rol === "admin") {
+    res.redirect("/productsManager");
+  } else {
+    res.redirect("/products");
   }
 };

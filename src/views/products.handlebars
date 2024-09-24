@@ -1,58 +1,87 @@
-<div>
-  <section>
-    <h2>PRODUCTOS</h2>
+<header>
+  <ul>
+    
+  <li> {{#if user}}<a class="linkPerfil" href="../api/sessions/current">Perfil</a>{{else}}{{/if}}</li>
+  <li>{{#if user}}
+    {{#if isAdmin}}
+    <form action="/productsManager" method="GET">
+  <button class="closeSession">Vista administrador</button></form>
+    {{else}}
+  <form action="/messages" method="GET">
+  <button class="closeSession">Chateá con nosotros</button></form>
+  {{/if}}
+      
+    <li> {{#if user}}{{#if isAdmin}}{{else}} <form action="/api/users/shopping/{{user.id}}" method="GET"><button class="closeSession"  >Mis Compras</button></form> {{/if}}{{else}}{{/if}}</li> 
+    {{/if}}</li>
+  <li>{{#if user}} <form action="/api/sessions/logout" method="POST">
+        <button class="closeSession" type="submit">Cerrar Sesión</button>
+      </form>{{else}}<a class="linkPerfil" href="../login">Iniciar sesión</a>{{/if}}</li>
 
-    <div >
-      {{#if user}}
-      <div>
-        <p>¡Hola,
-          {{user.first_name}}
-          {{user.last_name}}!</p>
-          <a  href="../api/sessions/current">Ir a mi Perfil<span class="material-symbols-outlined"></span></a>
-          </div>
-          <p>Ultima conexión: {{user.last_connection}}</p>
-
-      {{else}}
-        <p>Inicia sesión para inicar la compra</p>
-      {{/if}}
-      {{#if user}}
-
+</ul>{{#if user}}
+ {{#if isAdmin}}
+ {{else}}
         <a
           href="/carts/{{user.cart}}"
           class="material-symbols-outlined"
           id="imgCart"
         >
           {{#if cart.length}}
-            <p>{{cart.length}}</p>
+            <p class="quantity">{{cart.length}}</p>
           {{else}}
             <p></p>
           {{/if}}
           shopping_cart
         </a>
+        {{/if}}
       {{else}}
 
+      {{/if}}</nav></header>
+<main>
+<div>
+  <section class="sectionProducts">
+    <h2>PRODUCTOS</h2>
+
+    <div class="userInfo">
+      {{#if user}}
+      <div>
+        <p>¡Hola,
+          {{user.first_name}}
+          {{user.last_name}}!</p>
+         
+         
+          </div>
+          {{#if lastConnection}}
+          <p>Ultima conexión: {{lastConnection}}</p>
+          {{else}}
+          <p></p>
+          {{/if}}
+      {{else}}
+        <p>Inicia sesión para inicar la compra</p>
       {{/if}}
+      
     </div>
   
       {{#if response.payload.length}}
 
-        <div>
+        <div class="productsContainer">
           {{#each response.payload}}
-            <div >
+            <div class="cardProduct">
               <h3>{{this.title}}</h3>
               <p>$ {{this.price}}</p>
-              <div>
+              <div class="detailsProduct">
 {{#if ../response/userOne}}
+                {{#if ../isAdmin}}
+                {{else}}
                 <form
                   action="/carts/{{../response/userOne.cart}}/products/{{this._id}}"
                   method="POST"
-                ><button  data-id="{{this._id}}">Agregar
+                ><button class="addButton" data-id="{{this._id}}">Agregar
                   </button></form>
-
-                <a href="/productDetails/{{this._id}}">Ver
+                {{/if}}
+                <a class="viewDetails" href="/productDetails/{{this._id}}">Ver
                   más...</a></div>
                   {{else}}
-                  <a href="/productDetails/{{this._id}}">Ver
+                  <a class="viewDetails" href="/productDetails/{{this._id}}">Ver
                   más...</a></div>
                   {{/if}}
             </div>
@@ -73,17 +102,10 @@
         <p>No products found.</p>
       {{/if}}
     
-    {{#if user}}
-  <form action="/messages" method="GET">
-  <button>Chateá con nosotros</button></form>
-      <form action="/api/sessions/logout" method="POST">
-        <button type="submit">Cerrar Sesión</button>
-      </form>
-    {{else}}
-      <a href="/login">Inicia sesión</a>
-    {{/if}}
+    
   </section>
 
 </div>
+</main>
 
 <script src="/js/products.js"></script>

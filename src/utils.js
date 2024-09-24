@@ -1,7 +1,12 @@
 const bcrypt = require("bcryptjs");
-const{faker}= require("@faker-js/faker");
+const { create } = require("connect-mongo");
+const jwt = require("jsonwebtoken");
 const passport = require("passport");
-faker.location="es";
+const { faker } = require("@faker-js/faker");
+
+faker.location = "es";
+
+const PRIVATE_KEY = "CoderKeyQueFuncionaComoUnSecret";
 
 const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -9,6 +14,23 @@ const createHash = (password) =>
 const isValidPassword = (user, password) =>
   bcrypt.compareSync(password, user.password);
 
+const generateToken = (user) => {
+  const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: "24" });
+  return token;
+};
+
+const authToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).send({ error: "Not authenticated" });
+  console.log(authHeader);
+  const token = authHeader.split(" ")[1]; //El espacio entre comillas es importante
+  console.log(authHeader);
+  jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
+    if (error) return res.status(403).send({ error: "Not authorized" });
+    req.user = credentials.user;
+    next();
+  });
+};
 
 const passportCall = (strategy) => {
   return async (req, res, next) => {
@@ -33,6 +55,7 @@ const authorization = (role) => {
     next();
   };
 };
+
 const generateProducts = () => {
   return {
     title: faker.commerce.productName(),
@@ -49,6 +72,8 @@ const generateProducts = () => {
 module.exports = {
   createHash,
   isValidPassword,
+  generateToken,
+  authToken,
   passportCall,
   authorization,
   generateProducts,

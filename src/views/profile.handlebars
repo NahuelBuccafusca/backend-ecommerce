@@ -1,21 +1,25 @@
-<div >
-  <h2>PERFIL</h2></div>
-<div>
+
+  <h2>PERFIL</h2>
+<div class="datos">
   {{#if user}}
   <p>Usuario: {{user.first_name}} {{user.last_name}}</p>
   <p></p>
   <p>Correo: {{user.email}}</p>
-  <p>Rol:{{user.rol}}</p>
-  <a href="../../api/users/{{id}}/documents">Cargar documentación</a>
+  <p class="rol">{{user.rol}}</p>
+  <div>
+    <a class="linkDocumentation" href="../../api/users/{{id}}/documents">Cargar documentación</a>
+  </div>
   {{else}}
   <p>{{./error}}</p>
   {{/if}}
 </div>
 {{#if user}}
 <form action="/api/sessions/logout" method="POST">
-  <button type="submit">Cerrar Sesión</button>
+  <a class="linkDocumentation" href="../../products">Volver</a>
+  <button class="cerrarSesion" type="submit">Cerrar Sesión</button>
+  
 </form>
 {{else}}
 <form action="/login" method="GET">
-<button >INICIAR SESION</button></form>
+<button class="login">INICIAR SESION</button></form>
 {{/if}}

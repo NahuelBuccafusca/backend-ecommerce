@@ -1,26 +1,22 @@
-<div>
-  <h2>CHAT CLIENTES</h2>
+<h2>CHAT CLIENTES</h2>
+<div class="divPrincipal">
 
-  <form action="/api/messages" method="post">
-    <label for="usuario">Correo</label>
-    <input type="text" id="usuario" name="usuario" />
-    <label for="mensaje">Escriba su mensaje: </label>
+  <form action="/messages" method="post">
+    <p>Hola {{user.first_name}}!</p>
+    <label for="mensaje">Escribe tu mensaje: </label>
     <input type="text" name="mensaje" id="mensaje" />
     <button type="submit" id="btnEnviar">Enviar</button>
   </form>
   <div id="muestraMensajes">
     {{#each listMessages}}
-      <div>
-
-        <span>
-          voice_selection
-        </span>
+      <div class="messageItem">
         <p>
-          {{user}}
-          :
+          {{../user.first_name}}
+          dice:
           <span>{{message}}</span></p>
         <span
           id="close"
+          class="material-symbols-outlined deleteButton"
           data-id="{{_id}}"
         >
           close
@@ -28,7 +24,7 @@
       </div>
     {{/each}}
   </div>
-  <a href="./products">Volver a productos</a>
+  <a href="./products">Volver</a>
 </div>
 
 <script src="/js/chat.js"></script>

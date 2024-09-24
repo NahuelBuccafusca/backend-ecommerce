@@ -10,9 +10,11 @@ class CartManager {
     console.log("Carrito creado correctamente");
   }
 
+  //Método para ir agrendo productos a los carritos, el primer parámetro es el id del producto de Products.json
+  //el segúndo parámetro es el id del carrito que pretendo agregar el producto
   async addToCart(idP, idC) {
     try {
-      
+      //Variable que toma el producto utilizando el método addProduct()
       const cart = await cartModel.findOne({ _id: idC });
       const product = await productModel.findOne({ _id: idP });
       if (!cart) {
@@ -42,7 +44,7 @@ class CartManager {
       console.error("No se puede agregar producto o crear carrito", error);
     }
   }
-  
+  //Este metodo agrega producto por id, me sirve para el método de arriba
   async addProduct(id) {
     try {
       const bd = await this.readBD();

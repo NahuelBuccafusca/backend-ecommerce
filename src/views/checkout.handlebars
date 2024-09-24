@@ -1,23 +1,56 @@
+<header>
+  <nav>
+    <ul>
+
+      <li>
+        {{#if user}}<a
+            class="linkPerfil"
+            href="../../api/sessions/current"
+          >Perfil</a>{{else}}{{/if}}</li>
+      <li>{{#if user}}
+          {{#if isAdmin}}
+            <form action="/productsManager" method="GET">
+              <button class="closeSession">Vista administrador</button></form>
+          {{else}}
+            <form action="/messages" method="GET">
+              <button class="closeSession">Chateá con nosotros</button></form>
+          {{/if}}
+
+        {{/if}}</li>
+      <li>{{#if user}}
+          <form action="/api/sessions/logout" method="POST">
+            <button class="closeSession" type="submit">Cerrar Sesión</button>
+          </form>{{else}}<a class="linkPerfil" href="../login">Iniciar sesión</a>{{/if}}</li>
+
+    </ul>
+  </nav></header>
 <h2>Finaliza tu compra</h2>
-<div><h3>PRODUCTOS</h3>
+<div class="finallyProducts"><h3>PRODUCTOS</h3>
   {{#if ProductosConStock}}
-    <div>
+    <div class="stockProduct">
       <h4>Productos en stock</h4>
       {{#each ProductosConStock}}
-        <p>{{this.title}}</p>
+        <div style="display: flex;flex-direction:row;gap:20px;">
+          <p>{{this.title}}</p>
+          <p>Cantidad: {{this.quantity}}</p>
+        </div>
       {{/each}}
     </div>
   {{/if}}
   {{#if ProductosSinStock}}
-    <div>
+    <div class="noStockProduct">
       <h4>Productos sin stock</h4>
       {{#each ProductosSinStock}}
         <p>{{this.title}}</p>
       {{/each}}
     </div>
   {{/if}}
-  <p>Total de la compra <span>${{total}}.-</span></p>
-  <form action="/carts/:cid/purchase" method="post">
-    <button>Comprar</button>
-  </form>
+  <p class="totalPrice">Costo total de la compra <span>${{total}}.-</span></p>
+  <p>Los productos sin stock quedarán en el carrito</p>
+  <form action="/carts/{{id}}/purchase" method="post"><button
+      class="comprar">Comprar</button></form>
 </div>
+{{!-- <p>Código de Compra # {{ticket.code}}</p>
+<p>Fecha: {{ticket.purchase_datetime}}</p>
+<p>Total: ${{ticket.amount}}.-</p>
+<p>Correo Usuario: {{ticket.purchaser}}</p> --}}

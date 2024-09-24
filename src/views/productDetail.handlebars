@@ -1,41 +1,75 @@
-<div>
-  {{#if user}}
-    <a
-      href="/carts/{{user.cart}}"
-      id="imgCart"
-    >
-      {{#if cart.length}}
-        <p >{{cart.length}}</p>
-      {{else}}
-        <p></p>
-      {{/if}}
-      shopping_cart
-    </a>
-  {{else}}
-  {{/if}}
-  <section >
-    <h3>{{product.title}}</h3>
-    <div >
-      <div>
-        <p>Descripción: {{product.description}}</p>
-        <p>Precio: $ {{product.price}}.-</p>
-        <p>Categoria: {{product.category}}</p>
-        <div>
-          {{#if user}}
-            <form
-              action="/carts/{{user.cart}}/products/{{product._id}}"
-              method="POST"
-            ><button>Agregar </button></form>
-            <a href="/products"><button>Seguir comprando</button></a>
+<header>
+  <nav>
+    <ul>
+
+      <li>
+        {{#if user}}<a
+            class="linkPerfil"
+            href="../api/sessions/current"
+          >Perfil</a>{{else}}{{/if}}</li>
+      <li>{{#if user}}
+          {{#if isAdmin}}
+            <form action="/productsManager" method="GET">
+              <button class="closeSession">Vista administrador</button></form>
           {{else}}
-            <a href="/products"><button>Ver todos</button></a>
+            <form action="/messages" method="GET">
+              <button class="closeSession">Chateá con nosotros</button></form>
           {{/if}}
+
+        {{/if}}</li>
+      <li>{{#if user}}
+          <form action="/api/sessions/logout" method="POST">
+            <button class="closeSession" type="submit">Cerrar Sesión</button>
+          </form>{{else}}<a class="linkPerfil" href="../login">Iniciar sesión</a>{{/if}}</li>
+
+    </ul>{{#if user}}
+      {{#if isAdmin}}{{else}}
+        <a
+          href="/carts/{{user.cart}}"
+          class="material-symbols-outlined"
+          id="imgCart"
+        >
+          {{#if cart.length}}
+            <p class="quantity">{{cart.length}}</p>
+          {{else}}
+            <p></p>
+          {{/if}}
+          shopping_cart
+        </a>
+      {{/if}}
+    {{else}}
+
+    {{/if}}</nav></header>
+<main>
+  <div class="divDetails">
+
+    <section class="productDetails">
+      <h3>{{product.title}}</h3>
+      <div class="priceAndMore">
+        <div class="details">
+          <p>Descripción: {{product.description}}</p>
+          <p>Precio: $ {{product.price}}.-</p>
+          <p>Categoria: {{product.category}}</p>
+          <div class="btns">
+            {{#if user}}
+              {{#if isAdmin}}{{else}}
+                <form
+                  action="/carts/{{user.cart}}/products/{{product._id}}/productDetails"
+                  method="POST"
+                ><button class="addButton">Agregar </button></form>
+              {{/if}}
+              <a href="/products"><button class="shoping">Seguir comprando</button></a>
+
+            {{else}}
+              <a href="/products"><button class="shoping">Ver todos</button></a>
+            {{/if}}
+          </div>
+
         </div>
 
       </div>
+    </section>
+  </div>
+</main>
 
-    </div>
-  </section>
-</div>
-
-<script src="/js/productDetails.js"></script>
+<script src="/js/productsDetails.js"></script>

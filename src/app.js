@@ -22,7 +22,7 @@ const { devLogger, prodLogger } = require("./middleware/logger.js");
 dotenv.config();
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 app.use(cookieParser());
 app.use(cors());
@@ -40,7 +40,6 @@ app.use(
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
@@ -65,7 +64,7 @@ const swaggerOptions = {
     openapi: `3.0.1`,
     info: {
       title: "Documentación ecommerce",
-      description: `Proyecto Backend.`,
+      description: `Curso de Backend.`,
     },
   },
   apis: [`${__dirname}/docs/**/*.yaml`],
@@ -73,46 +72,6 @@ const swaggerOptions = {
 
 const specs = swaggerJsdoc(swaggerOptions);
 app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
-
-app.get("/loggerTest", (req, res) => {
-  res.render("logger");
-});
-app.get("/loggerTest/:logger", (req, res) => {
-  const { logger } = req.params;
-  switch (logger) {
-    case "debug":
-      devLogger.debug("Esto es un logger Debug");
-      res.render("logger", {  text: "Esto es un debug" });
-      break;
-    case "info":
-      devLogger.info("Esto es un logger info de desarrollo");
-      prodLogger.info("Esto es un looger info de producción");
-      res.render("logger", { text: "Esto es una info" });
-      break;
-    case "http":
-      devLogger.http("Esto es un logger http de desarrollo");
-      prodLogger.http("Esto es un looger http de producción");
-      res.render("logger", {  text: "Esto es un http" });
-      break;
-    case "warning":
-      devLogger.warning("Esto es un logger warning de desarrollo");
-      prodLogger.warning("Esto es un looger warning de producción");
-      res.render("logger", { text: "Esto es un warning" });
-      break;
-    case "error":
-      devLogger.error("Esto es un logger error de desarrollo");
-      prodLogger.error("Esto es un looger error de producción");
-      res.render("logger", {  text: "Esto es un error" });
-      break;
-    case "fatal":
-      devLogger.fatal("Esto es un logger fatal de desarrollo");
-      prodLogger.fatal("Esto es un looger fatal de producción");
-      res.render("logger", {  text: "Esto es un fatal" });
-      break;
-    default:
-      res.render("logger");
-  }
-});
 
 app.use("/api/sessions", sessionRouter);
 app.use("/", viewsRouter);
@@ -122,6 +81,6 @@ app.use("/", messageRouter);
 app.use("/api/users", usersRouter);
 app.use(errorHandler);
 
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
+app.listen(PORT, `0.0.0.0`, () =>
+  console.log(`Server listening on port ${PORT}`)
 );

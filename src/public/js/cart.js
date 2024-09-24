@@ -11,9 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const response = await fetch(`/carts/${cartId}/products/${productId}`, {
           method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-        if (response) {
+
+        const result = await response.json();
+        if (response.ok) {
           window.location.reload();
+          return;
         } else {
           alert("No se puede agrear la unidad");
         }
@@ -31,10 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const response = await fetch(`/carts/${cartId}/products/${productId}`, {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-
-        if (response) {
+        const result = await response.json();
+        if (response.ok) {
           window.location.reload();
+          return;
         } else {
           alert("Error al eliminar el producto");
         }

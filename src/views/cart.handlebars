@@ -1,33 +1,61 @@
-<div >
+<header>
+<nav>
+  <ul>
+    
+  <li> {{#if user}}<a class="linkPerfil" href="../api/sessions/current">Perfil</a>{{else}}{{/if}}</li>
+  <li>{{#if user}}
+    {{#if isAdmin}}
+    <form action="/productsManager" method="GET">
+  <button class="closeSession">Vista administrador</button></form>
+    {{else}}
+  <form action="/messages" method="GET">
+  <button class="closeSession">Chateá con nosotros</button></form>
+  {{/if}}
+      
+    
+    {{/if}}</li>
+  <li>{{#if user}} <form action="/api/sessions/logout" method="POST">
+        <button class="closeSession" type="submit">Cerrar Sesión</button>
+      </form>{{else}}<a class="linkPerfil" href="../login">Iniciar sesión</a>{{/if}}</li>
+
+</ul>
+      </nav></header>
+      <main>
+<div class="divCart">
   <h2>CARRITO</h2>
   {{#if cart.products.length}}
     {{#each cart.products}}
    
-      <div data-id="{{../cart._id}}">
+      <div class="productInCart" data-id="{{../cart._id}}">
         <p>{{this.product.title}}</p>
-      <div>
-        <button  data-id="{{this.product._id}}">+</button>
-         <p >Cantidad: {{this.quantity}}</p>
+      <div class="productsQuantity">
+        <button class="sumar addButton" data-id="{{this.product._id}}">+</button>
+         <p class="quantity">Cantidad: {{this.quantity}}</p>
          <p>Total: {{this.totalPrice}}</p>
-        <button  data-id="{{this.product._id}}">-</button>
+        <button class="deleteButton" data-id="{{this.product._id}}">-</button>
        </div>
+       
+        {{!-- <button class="deleteButton" data-id="{{this._id}}">Borrar</button> --}}
        </div>
        
     {{/each}}
-    <p>Total: ${{{totalPrice}}}.-</p>
-    <a href="/carts/{{cart._id}}/purchase">Continuar con la compra</a>
+    <p class="total">Total: ${{{totalPrice}}}.-</p>
+   
   {{else}}
-    <div >
+    <div class="carritoVacio">
       <p>¿Aún no has añadido productos al carrito!</p>
-
-    </div>
+      </div>
   {{/if}}
-  <div>
+  <div class="bottomButton ">
  <form action="/messages" method="GET">
-  <button>Chateá con nosotros</button></form>
-  <a href="/products">Home</a>
+  <button class="chat">Chateá con nosotros</button></form>
+  {{#if cart.products.length}}
+   <a class="pay" href="/carts/{{cart._id}}/purchase">Ir a pagar</a>
+   {{else}}
+   {{/if}}
+  <a class="shoping" href="/products">Segui comprando</a>
 </div>
 </div>
+</main>
 
-
-<script src="/desafio8/src/public/js/cart.js"></script>
+<script src="/js/cart.js"></script>

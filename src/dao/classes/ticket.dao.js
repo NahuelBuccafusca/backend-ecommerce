@@ -1,10 +1,15 @@
-const ticketModel = require("../models/ticket.model.js");
+const ticketModel = require("../models/ticket.model");
 
 class TicketManager {
   constructor() {}
 
   async getTicketById(tid) {
     const ticket = await ticketModel.findById(tid);
+    return ticket;
+  }
+
+  async getTicketByEmail(email) {
+    const ticket = await ticketModel.find({ purchaser: email }).lean();
     return ticket;
   }
 

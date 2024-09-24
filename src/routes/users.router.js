@@ -6,13 +6,21 @@ const router = express.Router();
 
 const {
   isAuthenticated,
+  isNotAuthenticated,
   isAdmin,
 } = require("../middleware/auth.js");
 
+
 router.get("/", isAuthenticated, isAdmin, userController.getUsers);
+
+
 router.get("/premium/:uid", isAuthenticated, isAdmin, userController.getUser);
 
+
 router.get("/:uid/documents", isAuthenticated, userController.getDocuments);
+
+
+router.get("/shopping/:uid", isAuthenticated, userController.userBuy);
 
 router.post(
   "/:uid/documents",
@@ -27,6 +35,7 @@ router.post(
 router.put("/premium/:uid", userController.putRolUser);
 
 router.delete("/", isAuthenticated, isAdmin, userController.deleteInactive);
+
 
 router.delete("/:uid", isAuthenticated, isAdmin, userController.deleteUser);
 

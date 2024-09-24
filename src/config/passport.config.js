@@ -9,59 +9,21 @@ const CustomError = require("../services/errors/CustomErrors.js");
 const EErrors = require("../services/errors/enum.js");
 const { generateUserErrorInfo } = require("../services/errors/info.js");
 const { devLogger, prodLogger } = require("../middleware/logger.js");
-
 dotenv.config();
+
 const LocalStrategy = local.Strategy;
-  
+
+
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies["secretCode"];
+  }
+  return token;
+};
+
 const initializePassport = () => {
-
-  passport.use(
-    "register",
-    new LocalStrategy(
-      { passReqToCallback: true, usernameField: "email" },
-      async (req, username, password, done) => {
-        const { first_name, last_name, email, age } = req.body;
-        
-        try {
-          if (!first_name || first_name.trim() === "") {
-            prodLogger.info("Debe completar los campos");
-            throw CustomError.createError({
-              name: "Debe completar más de un campo",
-              cause: generateUserErrorInfo(),
-              message: "Error al crear el usuario",
-              code: EErrors.INVALID_TYPES_ERROR,
-              shouldThrow: true,
-            });
-          }
-          let user = await userService.findOne({ email: username });
-          if (user) {
-            devLogger.info("Usuario existente");
-            return done(null, false);
-          }
-          const newCart = new cartService();
-          let createCart = await cartService.create(newCart);
-
-          const newUser = {
-            first_name,
-            last_name,
-            email,
-            age,
-            password: createHash(password),
-            cart: createCart._id,
-          };
-          let result = await userService.create(newUser);
-          return done(null, result);
-        } catch (error) {  if (error.shouldThrow) {
-          return done(null, false, { message: error.message });
-        } else {
-          return done(null, false, {
-            message: "Error al obtener el usuario: " + error.message,
-          });
-        }
-       }
-      }
-    )
-  );
+ 
   passport.use(
     "github",
     new GitHubStrategy(
@@ -99,6 +61,56 @@ const initializePassport = () => {
     )
   );
 
+  passport.use(
+    "register",
+    new LocalStrategy(
+      { passReqToCallback: true, usernameField: "email" },
+      async (req, username, password, done) => {
+        const { first_name, last_name, email, age } = req.body;
+
+        try {
+          if (!first_name || first_name.trim() === "") {
+            prodLogger.info("Debe completar los campos");
+            throw CustomError.createError({
+              name: "Debe completar más de un campo",
+              cause: generateUserErrorInfo(),
+              message: "Error al crear el usuario",
+              code: EErrors.INVALID_TYPES_ERROR,
+              shouldThrow: true,
+            });
+          }
+          let user = await userService.findOne({ email: username });
+          if (user) {
+            devLogger.info("Usuario existente");
+            return done(null, false);
+          }
+          const newCart = new cartService();
+          let createCart = await cartService.create(newCart);
+
+          const newUser = {
+            first_name,
+            last_name,
+            email,
+            age,
+            password: createHash(password),
+            cart: createCart._id,
+          };
+          let result = await userService.create(newUser);
+          return done(null, result);
+        } catch (error) {
+          if (error.shouldThrow) {
+            return done(null, false, { message: error.message });
+          } else {
+            return done(null, false, {
+              message: "Error al obtener el usuario: " + error.message,
+            });
+          }
+        }
+      }
+    )
+  );
+
+  
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });
@@ -107,6 +119,7 @@ const initializePassport = () => {
     let user = await userService.findById(id);
     done(null, user);
   });
+
   passport.use(
     "login",
     new LocalStrategy(
@@ -126,6 +139,5 @@ const initializePassport = () => {
     )
   );
 };
-
 
 module.exports = initializePassport;

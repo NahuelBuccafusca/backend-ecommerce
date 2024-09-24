@@ -15,16 +15,17 @@ router.get("/changepassword", sessionController.changePasswordGet);
 
 router.post("/changepassword", sessionController.changePasswordPost);
 
+
 router.get("/reset_password", sessionController.reset_password);
 
 router.get("/userregistrade", (req, res) => {
   res.render("registrade", {
+    
     title: "Registro Exitoso",
   });
 });
-
 router.get("/register", isNotAuthenticated, (req, res) => {
-  res.render("register", { title: "Registro" });
+  res.render("register", {  title: "Registro" });
 });
 
 router.get("/profile", isAuthenticated, (req, res) => {

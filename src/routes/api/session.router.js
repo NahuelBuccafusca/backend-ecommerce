@@ -1,6 +1,12 @@
 const express = require("express");
 const passport = require("passport");
 const sessionController = require("../../controllers/sessionController.js");
+const {
+  generateToken,
+  authToken,
+  passportCall,
+  authorization,
+} = require("../../utils.js");
 
 const router = express.Router();
 
@@ -11,7 +17,6 @@ router.post(
   }),
   sessionController.register
 );
-
 router.get("/failregister", sessionController.failregister);
 
 router.post(
@@ -24,14 +29,13 @@ router.put("/change_password", sessionController.changePasswordPut);
 
 router.get("/current", sessionController.current);
 
+
 router.get("/faillogin", (req, res) => {
   res.render("login", {
     title: "Bienvenido",
     Error: "Usuario y/o contraseña incorrectos",
   });
 });
-
-router.post("/logout", sessionController.logout);
 
 
 router.get(
@@ -45,4 +49,6 @@ router.get(
   passport.authenticate("github", { failureRedirect: "login" }),
   sessionController.githubCallback
 );
+
+router.post("/logout", sessionController.logout);
 module.exports = router;

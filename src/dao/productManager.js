@@ -17,6 +17,7 @@ class ProductManager {
     title,
     description,
     price,
+    thumbnail,
     code,
     status,
     category,
@@ -27,6 +28,7 @@ class ProductManager {
       !title ||
       !description ||
       !price ||
+      !thumbnail ||
       !code ||
       !status ||
       !category ||
@@ -55,6 +57,7 @@ class ProductManager {
     title,
     description,
     price,
+    thumbnail,
     code,
     status,
     category,
@@ -65,11 +68,12 @@ class ProductManager {
     if (!productoEncontrado) {
       throw Error("Producto no existe en la base de datos");
     }
-   
+    //Creo el objeto nuevo para agregar con las opciones para que no se borre ninguna propiedad de no pasarla como parámetro
     const productoActualizado = {
       title: title || productoEncontrado.title,
       description: description || productoEncontrado.description,
       price: price || productoEncontrado.price,
+      thumbnail: thumbnail || productoEncontrado.thumbnail,
       code: code || productoEncontrado.code,
       status: productoEncontrado.status,
       category: category || productoEncontrado.category,

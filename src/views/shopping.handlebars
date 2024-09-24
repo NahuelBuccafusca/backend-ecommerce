@@ -1,0 +1,62 @@
+<header>
+  <nav>
+    <ul>
+
+      <li>
+        {{#if user}}<a
+            class="linkPerfil"
+            href="../../../api/sessions/current"
+          >Perfil</a>{{else}}{{/if}}</li>
+      <li>{{#if user}}
+          {{#if isAdmin}}
+            <form action="/productsManager" method="GET">
+              <button class="closeSession">Vista administrador</button></form>
+          {{else}}
+            <form action="/messages" method="GET">
+              <button class="closeSession">Chateá con nosotros</button></form>
+          {{/if}}
+
+        {{/if}}</li>
+      <li>{{#if user}}
+          <form action="/api/sessions/logout" method="POST">
+            <button class="closeSession" type="submit">Cerrar Sesión</button>
+          </form>{{else}}<a class="linkPerfil" href="../login">Iniciar sesión</a>{{/if}}</li>
+
+    </ul>
+  </nav></header>
+<main>
+  <h2>MIS COMPRAS</h2>
+  <div class="shoppingList">
+    {{#if tickets.length}}
+      {{#each tickets}}
+        <div class="itemList">
+          <p class="dateShopping">{{this.purchase_datetime}}</p>
+          {{#each this.products}}
+            <div class="product">
+              <p>Producto: {{this.title}}</p>
+              <p>Cantidad: {{this.quantity}}</p>
+            </div>
+          {{/each}}
+          <p class="totalPrice"> Total: $ {{this.amount}}</p>
+
+          <h3 class="codeShopping">Código de pedido: {{this.code}}</h3>
+        </div>
+      {{/each}}
+
+    {{else}}
+      <div class="carritoVacio">
+        <p>¿Aún no tiene compras!</p>
+        <img
+          src="https://png.pngtree.com/background/20230813/original/pngtree-consumer-cat-shopping-cart-ridiculous-buy-photo-picture-image_4629778.jpg"
+          alt="Carrito de compras con gato"
+        />
+      </div>
+    {{/if}}
+  </div>
+  <div class="bottomButton">
+    <form action="/messages" method="GET">
+      <button class="chat">Chateá con nosotros</button></form>
+    <a class="shoping" href="/products">Segui comprando</a>
+  </div>
+</main>
+<script src="/js/cart.js"></script>

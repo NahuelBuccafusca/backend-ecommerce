@@ -1,0 +1,38 @@
+<header>
+  <nav>
+    <ul>
+
+      <li>
+        {{#if user}}<a
+            class="linkPerfil"
+            href="../api/sessions/current"
+          >Perfil</a>{{else}}{{/if}}</li>
+      <li>{{#if user}}
+          {{#if isAdmin}}
+            <form action="/productsManager" method="GET">
+              <button class="closeSession">Vista administrador</button></form>
+          {{else}}
+            <form action="/messages" method="GET">
+              <button class="closeSession">Chateá con nosotros</button></form>
+          {{/if}}
+
+        {{/if}}</li>
+      <li>{{#if user}}
+          <form action="/api/sessions/logout" method="POST">
+            <button class="closeSession" type="submit">Cerrar Sesión</button>
+          </form>{{else}}<a class="linkPerfil" href="../login">Iniciar sesión</a>{{/if}}</li>
+
+    </ul>
+  </nav></header>
+<main>
+  <h2>SU COMPRA</h2>
+  <div class="cardBuy">
+    <h3>Código: {{ticket.code}}</h3>
+    <h4>Productos</h4>
+    {{#each products}}
+      <p>* {{this.title}}</p>
+    {{/each}}
+    <h4>Total: ${{ticket.amount}}.-</h4>
+
+  </div>
+  <a class="home" href="/products">Home</a></main>
